@@ -1,9 +1,9 @@
-<div class="modal fade" id="user-form-modal" tabindex="-1" aria-labelledby="user-form-modal" aria-hidden="true">
+<div class="user-window">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="UserModalLabel"></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close user-close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -36,8 +36,8 @@
                 <div class="response-message"></div>
             </div>
             <div class="modal-footer" id="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" id="" class="btn window-btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary user-close">Close</button>
+                <button type="button" class="btn window-btn btn-primary">Save</button>
             </div>
         </div>
     </div>

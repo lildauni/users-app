@@ -5,7 +5,7 @@
                 <h5 class="title" id="UserModalLabel">Confirm</h5>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete these users?
+                Are you sure you want to delete this user?
             </div>
             <div class="modal-footer" id="modal-footer">
                 <button type="button" class="btn btn-secondary confirm-close">Close</button>

@@ -8,7 +8,7 @@
 
             </div>
             <div class="modal-footer" id="modal-footer">
-                <button type="button" class="btn btn-secondary window-close">Close</button>
+                <button type="button" class="btn btn-secondary message-close">Close</button>
             </div>
         </div>
     </div>

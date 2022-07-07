@@ -7,6 +7,7 @@ $(document).ready(function () {
 $(document).on("click", "#createUser", function (e) {
   e.preventDefault();
   let box=document.querySelector(".active-checkbox");
+  let modal=document.querySelector(".user-window");
   let status="not-active";
   if(box.checked){
     status="active";
@@ -20,15 +21,16 @@ $(document).on("click", "#createUser", function (e) {
   $.ajax({
     url: "router/routes.php?action=createUser",
     type: "post",
-    dataType: "html",
+    dataType: "json",
     data: data,
-    success: function (response) {
-      data=JSON.parse(response);
+    success: function (data) {
       if(data.error){
         $(".response-message").html(data.error.message);
         return
       }
+      modal.classList.remove("open");
       fetch();
+      
       
     },
   });
@@ -37,12 +39,13 @@ $(document).on("click", "#createUser", function (e) {
 //show creation form
 $(document).on("click", "#add", function(e){
   e.preventDefault();
-
+  let modal=document.querySelector(".user-window");
   $("form")[0].reset();
   $(".response-message").html("");
   let title="Add user";
   let btn=document.querySelector(".window-btn");
   btn.setAttribute("id", "createUser");
+  modal.classList.add("open");
   $("#UserModalLabel").html(title);
   $("#button").html(btn);
 });
@@ -51,6 +54,7 @@ $(document).on("click", "#add", function(e){
 $(document).on("click", "#edit", function(e){
   e.preventDefault();
 
+  let modal=document.querySelector(".user-window");
   $(".response-message").html("");
   $("form")[0].reset();
   let edit_id=$(this).attr("value");
@@ -60,6 +64,7 @@ $(document).on("click", "#edit", function(e){
   btn.setAttribute("id", "editUser");
   btn.setAttribute("value", edit_id);
   $("#UserModalLabel").html(title);
+  modal.classList.add("open");
 
   $.ajax({
     url:"router/routes.php?action=getUserById",
@@ -84,6 +89,7 @@ $(document).on("click", "#edit", function(e){
 $(document).on("click", "#editUser", function(e){
   e.preventDefault();
 
+  let modal=document.querySelector(".user-window");
   let box=document.querySelector(".active-checkbox");
   let status="not-active";
   if(box.checked){
@@ -101,33 +107,35 @@ $(document).on("click", "#editUser", function(e){
     url:"router/routes.php?action=editUser",
     type:"post",
     data:data,
-    success:function(response){
-      data=JSON.parse(response);
+    success:function(data){
       if(data.error){
         $(".response-message").html(data.error.message);
         return
       }
+      modal.classList.remove("open");
       fetch();
     }
   })
 })
 
-//deleting user
+//showing delete confirm
 $(document).on("click", "#delete", function(e){
   e.preventDefault();
   let delete_id=$(this).attr("value");
-
-  $.ajax({
-    url:"router/routes.php?action=deleteUser",
-    type:"post",
-    data:{
-      id:delete_id
-    },
-    success:function(data){
-      fetch();
-      console.log(data);
-    }
-  });
+  let modal=document.querySelector(".confirm-window");
+  let btn=document.querySelector(".window-confirm");
+  btn.setAttribute("id", delete_id);
+  modal.classList.add("open");
+  // $.ajax({
+  //   url:"router/routes.php?action=deleteUsers",
+  //   type:"post",
+  //   data:{
+  //     id:delete_id
+  //   },
+  //   success:function(data){
+  //     fetch();
+  //   }
+  // });
 });
 
 //showing user function
@@ -185,13 +193,13 @@ $(document).on("click", ".checkbox-action-1", function(){
   let message;
   let box=document.querySelectorAll(".user-checkbox:checked");
   if(option=="Please select"){
-    message="Choose option";
+    message="Choose option for group actions with users";
     $("#message").html(message);
     modal.classList.add("open");
     return
   }
   if(box.length==0){
-    message="Choose user";
+    message="Choose users for group actions";
     $("#message").html(message);
     modal.classList.add("open");
     return
@@ -213,8 +221,6 @@ $(document).on("click", ".checkbox-action-1", function(){
     },
     success:function(data){
       fetch();
-      message="Options successfully changed";
-    $("#message").html(message);
     }
   });
 });
@@ -261,9 +267,14 @@ $(document).on("click", ".checkbox-action-2", function(){
 $(document).on("click", ".window-confirm", function(){
   let box=document.querySelectorAll(".user-checkbox:checked");
   let modal=document.querySelector(".confirm-window");
+  let btn=document.querySelector(".window-confirm");
   let id=[];
-  for(let i=0;i<box.length;i++){
-    id.push(box[i].id);
+  if(btn.id){
+    id.push(btn.id);
+  }else{
+    for(let i=0;i<box.length;i++){
+      id.push(box[i].id);
+    }
   }
   modal.classList.remove("open");
   $.ajax({
@@ -279,11 +290,15 @@ $(document).on("click", ".window-confirm", function(){
 });
 
 //windows close
-$(document).on("click", ".window-close", function(){
+$(document).on("click", ".message-close", function(){
   let modal=document.querySelector(".message-window");
   modal.classList.remove("open");
 });
 $(document).on("click", ".confirm-close", function(){
   let modal=document.querySelector(".confirm-window");
+  modal.classList.remove("open");
+});
+$(document).on("click", ".user-close", function(){
+  let modal=document.querySelector(".user-window");
   modal.classList.remove("open");
 });
