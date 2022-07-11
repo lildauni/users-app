@@ -4,7 +4,7 @@
             <div class="modal-header">
                 <h5 class="title" id="UserModalLabel">Confirm</h5>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="delete-user">
                 Are you sure you want to delete this user?
             </div>
             <div class="modal-footer" id="modal-footer">

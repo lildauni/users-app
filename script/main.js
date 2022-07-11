@@ -106,6 +106,7 @@ $(document).on("click", "#editUser", function(e){
   $.ajax({
     url:"router/routes.php?action=editUser",
     type:"post",
+    dataType: "json",
     data:data,
     success:function(data){
       if(data.error){
@@ -170,20 +171,25 @@ function fetch(){
         trStr += '</tr>';
       }
       $("#tbody").html(trStr);
+      check();
     },
   });
 };
 
 //checkboxes selection
 $(document).on("click", ".user-checkbox", function(){
-  let all=$(".user-checkbox").length;
-  let checked=$(".user-checkbox:checked").length; 
-  let check = (all>0 && all==checked);
-  $(".main-checkbox").prop("checked", check);
+  check();
 })
 $(document).on("click", ".main-checkbox", function(){
   $(".user-checkbox").prop("checked", this.checked);
 });
+
+function check(){
+  let all=$(".user-checkbox").length;
+  let checked=$(".user-checkbox:checked").length; 
+  let check = (all>0 && all==checked);
+  $(".main-checkbox").prop("checked", check);
+}
 
 //group actions
 $(document).on("click", ".checkbox-action-1", function(){
@@ -205,6 +211,13 @@ $(document).on("click", ".checkbox-action-1", function(){
     return
   }
   if(option=="deleteUsers"){
+    if(box.length>1){
+      message="Are you sure you want to delete these users?";
+      $("#delete-user").html(message);
+    }else{
+      message="Are you sure you want to delete this user?";
+      $("#delete-user").html(message);
+    }
     confirm.classList.add("open");
     return
   }
@@ -248,6 +261,13 @@ $(document).on("click", ".checkbox-action-2", function(){
     id.push(box[i].id);
   }
   if(option=="deleteUsers"){
+    if(box.length>1){
+      message="Are you sure you want to delete these users?";
+      $("#delete-user").html(message);
+    }else{
+      message="Are you sure you want to delete this user?";
+      $("#delete-user").html(message);
+    }
     confirm.classList.add("open");
     return
   }
