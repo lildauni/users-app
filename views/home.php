@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Users table</title>
+    <title>Test table</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,16 +19,7 @@
             <div class="col">
                 <div class="row flex-lg-nowrap">
                     <div class="col mb-3">
-                        <div class="form mb-3">
-                            <button type="button" class="btn btn-primary" id="add" data-toggle="modal" data-target="#user-form-modal">Add</button>
-                            <select class="form-select option-select-1" aria-label="Пример выбора по умолчанию">
-                                <option selected>Please select</option>
-                                <option value="activeUsers">Set active</option>
-                                <option value="unactiveUsers">Set not active</option>
-                                <option value="deleteUsers">Delete</option>
-                            </select>
-                            <button type="button" class="btn btn-primary checkbox-action-1">Ok</button>
-                        </div>
+                    <? include "group-form.php" ?>
                         <div class="e-panel card">
                             <div class="card-body">
                                 <div class="card-title">
@@ -51,7 +42,7 @@
                                                     <th>Actions</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="tbody">
+                                            <tbody class="tbody">
 
                                             </tbody>
                                         </table>
@@ -61,16 +52,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form">
-                    <button type="button" class="btn btn-primary" id="add" data-toggle="modal" data-target="#user-form-modal">Add</button>
-                    <select class="form-select option-select-2" aria-label="Пример выбора по умолчанию">
-                        <option selected>Please select</option>
-                        <option value="activeUsers">Set active</option>
-                        <option value="unactiveUsers">Set not active</option>
-                        <option value="deleteUsers">Delete</option>
-                    </select>
-                    <button type="button" class="btn btn-primary checkbox-action-2">Ok</button>
-                </div>
+                <? include "group-form.php" ?>
 
                 <? include "window.php" ?>
                 <? include "message-window.php" ?>

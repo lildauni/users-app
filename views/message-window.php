@@ -4,7 +4,7 @@
             <div class="modal-header">
                 <h5 class="title" id="UserModalLabel">Message</h5>
             </div>
-            <div class="modal-body" id="message">
+            <div class="modal-body message">
 
             </div>
             <div class="modal-footer" id="modal-footer">

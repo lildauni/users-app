@@ -2,10 +2,10 @@ body{
   margin-top:20px;
   background:#f8f8f8
 }
-.active-circle {
+.active>i {
   color: green;
 }
-.not-active-circle {
+.status-circle {
   color: grey;
 }
 input.active-checkbox{

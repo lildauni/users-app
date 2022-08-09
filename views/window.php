@@ -27,9 +27,8 @@
                     <div class="form-group">
                         <label for="role" class="col-form-label">Role</label>
                         <select class="form-select" id="role" aria-label="Пример выбора по умолчанию">
-                            <option selected></option>
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
+                            <option value="1">Admin</option>
+                            <option value="2">User</option>
                         </select>
                     </div>
                 </form>
