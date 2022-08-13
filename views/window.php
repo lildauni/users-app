@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form class="user-form">
                     <div class="form-group">
                         <label for="first-name" class="col-form-label">First Name:</label>
                         <input type="text" class="form-control" id="first-name">
@@ -31,8 +31,9 @@
                             <option value="2">User</option>
                         </select>
                     </div>
+                    <input type="hidden" class="user_id">
+                    <div class="response-message"></div>
                 </form>
-                <div class="response-message"></div>
             </div>
             <div class="modal-footer" id="modal-footer">
                 <button type="button" class="btn btn-secondary user-close">Close</button>

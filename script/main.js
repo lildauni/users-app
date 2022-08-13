@@ -2,14 +2,9 @@
 $(document).ready(function () {
   $.ajax({
     url: "router/routes.php?action=getUsers",
-    type: "post",
+    type: "get",
     dataType: "json",
-    data: {},
     success: function (data) {
-      if (data.error) {
-        $(".result").html(data.error.message);
-        return;
-      }
       for (var i = 0; i < data.user.length; i++) {
         createRow(data.user[i]);
       }
@@ -17,40 +12,11 @@ $(document).ready(function () {
   });
 });
 
-//creating user
-$(document).on("click", "#createUser", function (e) {
-  e.preventDefault();
-  let box = document.querySelector(".active-checkbox");
-  let modal = document.querySelector(".user-window");
-  let status = box.checked;
-  let data = {
-    first_name: $("#first-name").val(),
-    last_name: $("#last-name").val(),
-    status: status,
-    role: $("#role").val(),
-  };
-  $.ajax({
-    url: "router/routes.php?action=createUser",
-    type: "post",
-    dataType: "json",
-    data: data,
-    success: function (data) {
-      if (data.error) {
-        $(".response-message").html(data.error.message);
-        return;
-      }
-      modal.classList.remove("open");
-      createRow(data.user);
-      check();
-    },
-  });
-});
-
 //show creation form
-$(document).on("click", "#add", function (e) {
+$(document).on("click", ".add", function (e) {
   e.preventDefault();
   let modal = document.querySelector(".user-window");
-  $("form")[0].reset();
+  $(".user-form").trigger("reset");
   $(".response-message").html("");
   let title = "Add user";
   let btn = document.querySelector(".window-btn");
@@ -66,14 +32,11 @@ $(document).on("click", ".edit", function (e) {
 
   let form = document.querySelector(".user-window");
   let modal = document.querySelector(".message-window");
-  $(".response-message").html("");
-  $("form")[0].reset();
+  $(".user-form").trigger("reset");
   let edit_id = $(this).attr("id");
   let btn = document.querySelector(".window-btn");
   let box = document.querySelector(".active-checkbox");
   let title = "Edit user";
-  btn.setAttribute("id", "editUser");
-  btn.setAttribute("value", edit_id);
   $("#UserModalLabel").html(title);
   $.ajax({
     url: "router/routes.php?action=getUserById",
@@ -96,6 +59,7 @@ $(document).on("click", ".edit", function (e) {
       $("#first-name").val(data.user.first_name);
       $("#last-name").val(data.user.last_name);
       $("#role option[value=" + data.user.role + "]").prop("selected", true);
+      $(".user_id").val(data.user.id);
       if (data.user.status == 'true') {
         box.checked = true;
       }
@@ -103,8 +67,8 @@ $(document).on("click", ".edit", function (e) {
   });
 });
 
-//editing user
-$(document).on("click", "#editUser", function (e) {
+//user operations
+$(document).on("click", ".window-btn", function(e){
   e.preventDefault();
 
   let modal = document.querySelector(".user-window");
@@ -115,44 +79,50 @@ $(document).on("click", "#editUser", function (e) {
     last_name: $("#last-name").val(),
     status: status,
     role: $("#role").val(),
-    id: $("#editUser").attr("value"),
+    id: $(".user_id").attr("value"),
   };
-
-  $.ajax({
-    url: "router/routes.php?action=editUser",
-    type: "post",
-    dataType: "json",
-    data: data,
-    success: function (data) {
-      if (data.error) {
-        $(".response-message").html(data.error.message);
+  if(data.id){
+    $.post("router/routes.php?action=editUser", data, function(result){
+      if (result.error) {
+        $(".response-message").html(result.error.message);
         return;
       }
       modal.classList.remove("open");
-      switch(data.user.role){
+      switch(result.user.role){
         case '1':
-          data.user.role="Admin";
+          result.user.role="Admin";
           break;
         case '2':
-          data.user.role="User";
+          result.user.role="User";
           break;
       }
-      let tr = document.querySelector('tr[data-id="' + data.user.id + '"]');
+      let tr = document.querySelector('tr[data-id="' + result.user.id + '"]');
       let first_name = tr.querySelector(".first_name");
-      first_name.innerHTML = data.user.first_name+" ";
+      first_name.innerHTML = result.user.first_name+" ";
       let last_name = tr.querySelector(".last_name");
-      last_name.innerHTML = data.user.last_name;
+      last_name.innerHTML = result.user.last_name;
       let role = tr.querySelector(".role");
-      role.innerHTML = data.user.role;
+      role.innerHTML = result.user.role;
       let status = tr.querySelector(".status");
-      if (data.user.status == 'true') {
+      if (result.user.status == 'true') {
         status.classList.add("active");
       } else {
         status.classList.remove("active");
       }
-    },
-  });
-});
+    }, "json")
+  }
+  else{
+    $.post("router/routes.php?action=createUser", data, function(result){
+      if (result.error) {
+        $(".response-message").html(result.error.message);
+        return;
+      }
+      modal.classList.remove("open");
+      createRow(result.user);
+      check();
+    }, "json")
+  }
+})
 
 //showing delete confirm
 $(document).on("click", ".delete", function (e) {
