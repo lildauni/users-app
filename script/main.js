@@ -64,7 +64,8 @@ $(document).on("click", "#add", function (e) {
 $(document).on("click", ".edit", function (e) {
   e.preventDefault();
 
-  let modal = document.querySelector(".user-window");
+  let form = document.querySelector(".user-window");
+  let modal = document.querySelector(".message-window");
   $(".response-message").html("");
   $("form")[0].reset();
   let edit_id = $(this).attr("id");
@@ -87,10 +88,11 @@ $(document).on("click", ".edit", function (e) {
         let first_name=tr.querySelector('.first_name');
         let last_name=tr.querySelector('.last_name');
         message = "User " + first_name.textContent + last_name.textContent +" does not exist";
-        alert(message);
+        $(".message").html(message);
+        modal.classList.add("open");
         return;
       }
-      modal.classList.add("open");
+      form.classList.add("open");
       $("#first-name").val(data.user.first_name);
       $("#last-name").val(data.user.last_name);
       $("#role option[value=" + data.user.role + "]").prop("selected", true);
@@ -204,6 +206,10 @@ function check() {
   let check = all > 0 && all == checked;
   $(".main-checkbox").prop("checked", check);
 }
+function uncheck(){
+  $(".user-checkbox").prop("checked", false);
+  $(".main-checkbox").prop("checked", false);
+}
 
 //group actions
 $(document).on("click", ".checkbox-action", function () {
@@ -258,7 +264,8 @@ $(document).on("click", ".checkbox-action", function () {
         let first_name=tr.querySelector('.first_name');
         let last_name=tr.querySelector('.last_name');
         message = "User " + first_name.textContent + last_name.textContent +" does not exist";
-        alert(message);
+        $(".message").html(message);
+        modal.classList.add("open");
         return;
       }
       for(let i=0;i<data.id.length;i++){
@@ -271,6 +278,7 @@ $(document).on("click", ".checkbox-action", function () {
           status.classList.remove("active");
         }
       }
+      uncheck();
     },
   });
 });
@@ -302,6 +310,7 @@ $(document).on("click", "#delete-users", function () {
         tr=table.querySelector('tr[data-id="' + data.id[i] + '"]');
         $(tr).remove();
       }
+      uncheck();
     },
   });
 });
