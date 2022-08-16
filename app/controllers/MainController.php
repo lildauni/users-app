@@ -44,7 +44,7 @@ class MainController
             'status' => $this->status,
             'error' => $this->error,
             'user' => [
-                'id' => $user_id[0],
+                'id' => $user_id,
                 'first_name' => $_POST['first_name'],
                 'last_name' => $_POST['last_name'],
                 'role' => $_POST['role'],
@@ -65,18 +65,19 @@ class MainController
                 "message" => "User does not exist"
             ];
             echo json_encode(['status' => $this->status, 'error' => $this->error, 'id' => $_POST['id']]);
-            return null;
+        } else {
+            echo json_encode([
+                'status' => $this->status,
+                'error' => $this->error,
+                'user' => [
+                    'id' => $this->user['id'],
+                    'first_name' => $this->user['first_name'],
+                    'last_name' => $this->user['last_name'],
+                    'role' => $this->user['role'],
+                    'status' => $this->user['status']
+                ]
+            ]);
         }
-        echo json_encode([
-            'status' => $this->status,
-            'error' => $this->error, 
-            'user' => [
-                'id' => $this->user[0]['id'],
-                'first_name' => $this->user[0]['first_name'],
-                'last_name' => $this->user[0]['last_name'],
-                'role' => $this->user[0]['role'],
-                'status' => $this->user[0]['status']
-            ]]);
     }
 
     public function editUser()
@@ -124,9 +125,9 @@ class MainController
     public function activeUsers()
     {
         $data = new User();
-        $str=rtrim($_POST['id'], ",");
-        $id=explode(",", $str);
-        foreach($id as $item){
+        $str = rtrim($_POST['id'], ",");
+        $id = explode(",", $str);
+        foreach ($id as $item) {
             $this->user = $data->getUserById($item);
             if (empty($this->user)) {
                 $this->status = false;
@@ -138,7 +139,7 @@ class MainController
                 return null;
             }
         }
-        $id = $data->activeUsers();
+        $data->activeUsers();
         echo json_encode([
             'status' => $this->status,
             'error' => $this->error,
@@ -149,9 +150,9 @@ class MainController
     public function unactiveUsers()
     {
         $data = new User();
-        $str=rtrim($_POST['id'], ",");
-        $id=explode(",", $str);
-        foreach($id as $item){
+        $str = rtrim($_POST['id'], ",");
+        $id = explode(",", $str);
+        foreach ($id as $item) {
             $this->user = $data->getUserById($item);
             if (empty($this->user)) {
                 $this->status = false;
@@ -163,7 +164,7 @@ class MainController
                 return null;
             }
         }
-        $id = $data->unactiveUsers();
+        $data->unactiveUsers();
         echo json_encode([
             'status' => $this->status,
             'error' => $this->error,
@@ -174,7 +175,9 @@ class MainController
     public function deleteUsers()
     {
         $data = new User();
-        $id = $data->deleteUsers();
+        $str = rtrim($_POST['id'], ",");
+        $id = explode(",", $str);
+        $data->deleteUsers();
         echo json_encode([
             'status' => $this->status,
             'error' => $this->error,

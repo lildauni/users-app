@@ -1,15 +1,10 @@
 //show users in table
 $(document).ready(function () {
-  $.ajax({
-    url: "router/routes.php?action=getUsers",
-    type: "get",
-    dataType: "json",
-    success: function (data) {
-      for (var i = 0; i < data.user.length; i++) {
-        createRow(data.user[i]);
-      }
-    },
-  });
+  $.get("router/routes.php?action=getUsers", function(result){
+    for (var i = 0; i < result.user.length; i++) {
+      createRow(result.user[i]);
+    }
+  },"json");
 });
 
 //show creation form
@@ -21,6 +16,7 @@ $(document).on("click", ".add", function (e) {
   let title = "Add user";
   let btn = document.querySelector(".window-btn");
   btn.setAttribute("id", "createUser");
+  $(".user_id").val("");
   modal.classList.add("open");
   $("#UserModalLabel").html(title);
   $("#button").html(btn);
@@ -34,37 +30,31 @@ $(document).on("click", ".edit", function (e) {
   let modal = document.querySelector(".message-window");
   $(".user-form").trigger("reset");
   let edit_id = $(this).attr("id");
-  let btn = document.querySelector(".window-btn");
   let box = document.querySelector(".active-checkbox");
   let title = "Edit user";
+  let data={
+    id: edit_id,
+  }
   $("#UserModalLabel").html(title);
-  $.ajax({
-    url: "router/routes.php?action=getUserById",
-    type: "post",
-    dataType: "json",
-    data: {
-      id: edit_id,
-    },
-    success: function (data) {
-      if (data.error) {
-        let tr=document.querySelector('tr[data-id="' + data.id + '"]');
-        let first_name=tr.querySelector('.first_name');
-        let last_name=tr.querySelector('.last_name');
-        message = "User " + first_name.textContent + last_name.textContent +" does not exist";
-        $(".message").html(message);
-        modal.classList.add("open");
-        return;
-      }
-      form.classList.add("open");
-      $("#first-name").val(data.user.first_name);
-      $("#last-name").val(data.user.last_name);
-      $("#role option[value=" + data.user.role + "]").prop("selected", true);
-      $(".user_id").val(data.user.id);
-      if (data.user.status == 'true') {
-        box.checked = true;
-      }
-    },
-  });
+  $.post("router/routes.php?action=getUserById", data, function(result){
+    if (result.error) {
+      let tr=document.querySelector('tr[data-id="' + result.id + '"]');
+      let first_name=tr.querySelector('.first_name');
+      let last_name=tr.querySelector('.last_name');
+      message = "User " + first_name.textContent + last_name.textContent +" does not exist";
+      $(".message").html(message);
+      modal.classList.add("open");
+      return;
+    }
+    form.classList.add("open");
+    $("#first-name").val(result.user.first_name);
+    $("#last-name").val(result.user.last_name);
+    $("#role option[value=" + result.user.role + "]").prop("selected", true);
+    $(".user_id").val(result.user.id);
+    if (result.user.status == 'true') {
+      box.checked = true;
+    }
+  }, "json");
 });
 
 //user operations
@@ -109,7 +99,7 @@ $(document).on("click", ".window-btn", function(e){
       } else {
         status.classList.remove("active");
       }
-    }, "json")
+    }, "json");
   }
   else{
     $.post("router/routes.php?action=createUser", data, function(result){
@@ -120,7 +110,7 @@ $(document).on("click", ".window-btn", function(e){
       modal.classList.remove("open");
       createRow(result.user);
       check();
-    }, "json")
+    }, "json");
   }
 })
 
@@ -145,20 +135,15 @@ $(document).on("click", "#delete-user", function(){
   let id=$(this).attr("data-id");
   let modal = document.querySelector(".confirm-window");
   modal.classList.remove("open");
-  $.ajax({
-    url: "router/routes.php?action=deleteUser",
-    type: "post",
-    dataType:"json",
-    data: {
-      id: id,
-    },
-    success: function (data) {
-      let table=document.querySelector(".tbody");
-      let tr = table.querySelector('tr[data-id="' + data.id + '"]');
-      $(tr).remove();
-      check();
-    },
-  });
+  let data={
+    id:id
+  }
+  $.post("router/routes.php?action=deleteUser", data, function(result){
+    let table=document.querySelector(".tbody");
+    let tr = table.querySelector('tr[data-id="' + result.id + '"]');
+    $(tr).remove();
+    check();
+  }, "json");
 })
 
 
@@ -220,37 +205,32 @@ $(document).on("click", ".checkbox-action", function () {
   for(let i=0;i<box.length;i++){
     id+=box[i].id+",";
   }
+  let data={
+    id:id
+  }
 
-  $.ajax({
-    url: "router/routes.php?action=" + option,
-    type: "post",
-    dataType:"json",
-    data: {
-      id: id
-    },
-    success: function (data) {
-      if (data.error) {
-        let tr=document.querySelector('tr[data-id="' + data.id + '"]');
-        let first_name=tr.querySelector('.first_name');
-        let last_name=tr.querySelector('.last_name');
-        message = "User " + first_name.textContent + last_name.textContent +" does not exist";
-        $(".message").html(message);
-        modal.classList.add("open");
-        return;
+  $.post("router/routes.php?action=" + option, data, function(result){
+    if (data.error) {
+      let tr=document.querySelector('tr[data-id="' + data.id + '"]');
+      let first_name=tr.querySelector('.first_name');
+      let last_name=tr.querySelector('.last_name');
+      message = "User " + first_name.textContent + last_name.textContent +" does not exist";
+      $(".message").html(message);
+      modal.classList.add("open");
+      return;
+    }
+    for(let i=0;i<result.id.length;i++){
+      tr=document.querySelector('tr[data-id="' + result.id[i] + '"]');
+      let status=tr.querySelector(".status");
+      if(option=="activeUsers"){
+        status.classList.add("active");
       }
-      for(let i=0;i<data.id.length;i++){
-        tr=document.querySelector('tr[data-id="' + data.id[i] + '"]');
-        let status=tr.querySelector(".status");
-        if(option=="activeUsers"){
-          status.classList.add("active");
-        }
-        if(option=="unactiveUsers"){
-          status.classList.remove("active");
-        }
+      if(option=="unactiveUsers"){
+        status.classList.remove("active");
       }
-      uncheck();
-    },
-  });
+    }
+    uncheck();
+  }, "json");
 });
 
 //delete users
@@ -265,24 +245,19 @@ $(document).on("click", "#delete-users", function () {
   for (let i = 0; i < box.length; i++) {
     id+=box[i].id+",";
   }
+  data={
+    id:id
+  }
   modal.classList.remove("open");
-  $.ajax({
-    url: "router/routes.php?action=deleteUsers",
-    type: "post",
-    dataType:"json",
-    data: {
-      id: id,
-    },
-    success: function (data) {
-      let table=document.querySelector(".tbody");
-      let tr="";
-      for(let i=0;i<data.id.length;i++){
-        tr=table.querySelector('tr[data-id="' + data.id[i] + '"]');
-        $(tr).remove();
-      }
-      uncheck();
-    },
-  });
+  $.post("router/routes.php?action=deleteUsers", data, function(result){
+    let table=document.querySelector(".tbody");
+    let tr="";
+    for(let i=0;i<result.id.length;i++){
+      tr=table.querySelector('tr[data-id="' + result.id[i] + '"]');
+      $(tr).remove();
+    }
+    uncheck();
+  }, "json");
 });
 
 //windows close

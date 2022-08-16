@@ -11,19 +11,16 @@ class User
             'dbname' => 'users_db',
             'dbpass' => 'root',
         );
-        $this->link = mysqli_connect($connectData['dbserver'], $connectData['dbuser'], $connectData['dbpass'], $connectData['dbname']);
-        if (mysqli_connect_errno()) {
-            echo "Unable to connect " . mysqli_connect_error();
-        }
+        $this->link = new mysqli($connectData['dbserver'], $connectData['dbuser'], $connectData['dbpass'], $connectData['dbname']);
     }
 
     public function getUsers()
     {
         $sql = 'SELECT * FROM users ORDER BY id ASC';
-        $result = mysqli_query($this->link, $sql);
-        while ($arRes = mysqli_fetch_assoc($result))
-            $userData[] = $arRes;
-        return $userData;
+        $result = $this->link->query($sql);
+        while ($row = $result->fetch_assoc())
+            $users[] = $row;
+        return $users;
     }
 
     public function createUser()
@@ -33,10 +30,8 @@ class User
         $role = $_POST['role'];
         $status = $_POST['status'];
         $sql = "INSERT INTO `users`(`first_name`, `last_name`, `role`, `status`) VALUES ('$first_name', '$last_name', '$role', '$status')";
-        mysqli_query($this->link, $sql);
-        $sql = "SELECT id FROM users WHERE `first_name`='$first_name' AND `last_name`= '$last_name'";
-        $id=mysqli_query($this->link, $sql);
-        return mysqli_fetch_row($id);
+        $this->link->query($sql);
+        return $this->link->insert_id;
     }
 
     public function editUser()
@@ -47,56 +42,44 @@ class User
         $role = $_POST['role'];
         $status = $_POST['status'];
         $sql = "UPDATE `users` SET `first_name`='$first_name',`last_name`='$last_name',`role`='$role',`status`='$status' WHERE users.id='$id'";
-        mysqli_query($this->link, $sql);
+        $this->link->query($sql);
     }
 
     public function deleteUser()
     {
-        $id=$_POST['id'];
-        $sql="DELETE FROM users WHERE users.id=".$id;
-        mysqli_query($this->link, $sql);
+        $id = $_POST['id'];
+        $sql = "DELETE FROM users WHERE users.id=" . $id;
+        $this->link->query($sql);
         return $id;
     }
 
     public function getUserById($id)
     {
-        $sql = "SELECT * FROM users WHERE users.id=".$id;
-        $result = mysqli_query($this->link, $sql);
-        while ($arRes = mysqli_fetch_assoc($result))
-            $userData[] = $arRes;
-        return $userData;
+        $sql = "SELECT * FROM users WHERE users.id=" . $id;
+        $result = $this->link->query($sql);
+        while ($row = $result->fetch_assoc())
+            $user = $row;
+        return $user;
     }
 
     public function activeUsers()
     {
-        $str=rtrim($_POST['id'], ",");
-        $id=explode(",", $str);
-        foreach ($id as $item) {
-            $sql = "UPDATE `users` SET `status`='true' WHERE users.id=".$item;
-            mysqli_query($this->link, $sql);
-        }
-        return $id;
+        $id = rtrim($_POST['id'], ",");
+        $sql = "UPDATE `users` SET `status`='true' WHERE users.id IN ('$id')";
+        $this->link->query($sql);
     }
 
     public function unactiveUsers()
     {
-        $str=rtrim($_POST['id'], ",");
-        $id=explode(",", $str);
-        foreach ($id as $item) {
-            $sql = "UPDATE `users` SET `status`='false' WHERE users.id=".$item;
-            mysqli_query($this->link, $sql);
-        }
-        return $id;
+        $id = rtrim($_POST['id'], ",");
+        $sql = "UPDATE `users` SET `status`='false' WHERE users.id IN ('$id')";
+        $this->link->query($sql);
     }
 
     public function deleteUsers()
     {
-        $str=rtrim($_POST['id'], ",");
-        $id=explode(",", $str);
-        foreach ($id as $item) {
-            $sql = "DELETE FROM `users` WHERE users.id=".$item;
-            mysqli_query($this->link, $sql);
-        }
-        return $id;
+        $id = rtrim($_POST['id'], ",");
+        $sql = "DELETE FROM `users` WHERE users.id IN ('$id')";
+        $this->link->query($sql);
     }
 }
