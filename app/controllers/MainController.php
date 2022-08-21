@@ -139,7 +139,7 @@ class MainController
                 return null;
             }
         }
-        $data->activeUsers();
+        $data->activeUsers($str);
         echo json_encode([
             'status' => $this->status,
             'error' => $this->error,
@@ -164,7 +164,7 @@ class MainController
                 return null;
             }
         }
-        $data->unactiveUsers();
+        $data->unactiveUsers($str);
         echo json_encode([
             'status' => $this->status,
             'error' => $this->error,
@@ -177,7 +177,7 @@ class MainController
         $data = new User();
         $str = rtrim($_POST['id'], ",");
         $id = explode(",", $str);
-        $data->deleteUsers();
+        $data->deleteUsers($str);
         echo json_encode([
             'status' => $this->status,
             'error' => $this->error,

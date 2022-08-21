@@ -62,24 +62,21 @@ class User
         return $user;
     }
 
-    public function activeUsers()
+    public function activeUsers($id)
     {
-        $id = rtrim($_POST['id'], ",");
-        $sql = "UPDATE `users` SET `status`='true' WHERE users.id IN ('$id')";
+        $sql = "UPDATE `users` SET `status`='true' WHERE users.id IN ($id)";
         $this->link->query($sql);
     }
 
-    public function unactiveUsers()
+    public function unactiveUsers($id)
     {
-        $id = rtrim($_POST['id'], ",");
-        $sql = "UPDATE `users` SET `status`='false' WHERE users.id IN ('$id')";
+        $sql = "UPDATE `users` SET `status`='false' WHERE users.id IN ($id)";
         $this->link->query($sql);
     }
 
-    public function deleteUsers()
+    public function deleteUsers($id)
     {
-        $id = rtrim($_POST['id'], ",");
-        $sql = "DELETE FROM `users` WHERE users.id IN ('$id')";
+        $sql = "DELETE FROM `users` WHERE users.id IN ($id)";
         $this->link->query($sql);
     }
 }
